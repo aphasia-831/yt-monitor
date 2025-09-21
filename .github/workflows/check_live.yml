@@ -1,0 +1,32 @@
+name: Check YouTube Live
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # 每 10 分钟
+  workflow_dispatch:
+
+jobs:
+  check-live:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run monitor
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          CHANNEL_IDS: ${{ secrets.CHANNEL_IDS }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UPSTASH_REDIS_URL: ${{ secrets.UPSTASH_REDIS_URL }}
+          UPSTASH_REDIS_TOKEN: ${{ secrets.UPSTASH_REDIS_TOKEN }}
+          NOTIFY_TTL_HOURS: ${{ secrets.NOTIFY_TTL_HOURS }}
+        run: node check.js
