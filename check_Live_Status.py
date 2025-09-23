@@ -7,9 +7,13 @@ import redis
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-# Redis
-REDIS_URL = os.getenv("UPSTASH_REDIS_URL")
-rdb = redis.Redis.from_url(REDIS_URL,ssl=True)
+# 获取 Redis URL
+redis_url = os.getenv("UPSTASH_REDIS_URL")
+if not redis_url:
+    raise ValueError("Please set REDIS_URL environment variable in GitHub Secrets")
+# 连接 Redis
+r = redis.from_url(redis_url, decode_responses=True)
+
 
 # 频道 ID / @名
 CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
