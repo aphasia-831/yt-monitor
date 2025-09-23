@@ -36,7 +36,7 @@ def get_live_url(channel_id):
     headers = {"X-APIKEY": HOLODEX_API_KEY}
     
     try:
-        resp = requests.get(url, headers=headers,, timeout=10)
+        resp = requests.get(url, headers=headers, timeout=10)
         if resp.status_code == 200:
           print(f"[{channel_id}] Holodex API请求失败: {resp.status_code} {resp.text}")
           return None
