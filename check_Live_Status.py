@@ -12,7 +12,7 @@ redis_url = os.getenv("UPSTASH_REDIS_URL")
 if not redis_url:
     raise ValueError("Please set REDIS_URL environment variable in GitHub Secrets")
 # 连接 Redis
-r = redis.from_url(redis_url, decode_responses=True)
+r = redis.from_url(redis_url, decode_responses=True,ssl=True)
 
 
 # 频道 ID / @名
