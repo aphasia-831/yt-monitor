@@ -26,5 +26,5 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           CHANNEL_IDS: ${{ secrets.CHANNEL_IDS }}
           UPSTASH_REDIS_URL: ${{ secrets.UPSTASH_REDIS_URL }}
-          HOLODEX_API_KEY: $({ secrets.HOLODEX_API_KEY})
+          HOLODEX_API_KEY: ${{ secrets.HOLODEX_API_KEY}}
         run: python check_Live_Status.py
