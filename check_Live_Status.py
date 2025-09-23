@@ -39,7 +39,7 @@ for cid in CHANNEL_IDS:
     resp = requests.get(live_page, headers={"User-Agent": "Mozilla/5.0"})
     html = resp.text
 
-    match = re.search(r"watch\?v=([a-zA-Z0-9_-]{11})", html)
+    match = re.search(r'<meta itemprop="videoId" content="([a-zA-Z0-9_-]{11})">', html)
     if match:
         video_id = match.group(1)
         live_url = f"https://www.youtube.com/watch?v={video_id}"
@@ -51,4 +51,4 @@ for cid in CHANNEL_IDS:
         if not last_id or last_id.decode() != video_id:
             send_telegram(f"📺频道正在直播！\n{live_url}")
             print("直播链接：", live_url)
-            r.set(key, video_id)  # 设置过期时间
+            r.set(key,live_url)  # 设置过期时间
