@@ -35,51 +35,30 @@ def send_telegram(msg: str):
         params={"chat_id": TELEGRAM_CHAT_ID, "text": msg}
     )
 
-def get_live_video_id(channel_id):
+def get_live_url(channel_id):
     url = f"https://www.youtube.com/channel/{channel_id}/live"
-    resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
-    html = resp.text
+    # 不允许自动重定向
+    resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=False)
 
-    # 提取 ytInitialData JSON
-    match = re.search(r'var ytInitialData = ({.*?});</script>', html)
-    if not match:
-        return None
-
-    data = json.loads(match.group(1))
-
-    try:
-        # 获取频道 tab 内容
-        tabs = data['contents']['twoColumnBrowseResultsRenderer']['tabs']
-        for tab in tabs:
-            tab_content = tab.get('tabRenderer', {}).get('content', {})
-            sections = tab_content.get('sectionListRenderer', {}).get('contents', [])
-            for section in sections:
-                items = section.get('itemSectionRenderer', {}).get('contents', [])
-                for item in items:
-                    video = item.get('videoRenderer')
-                    if video:
-                        # 判断是否正在直播
-                        badges = video.get('badges', [])
-                        for badge in badges:
-                            style = badge.get('metadataBadgeRenderer', {}).get('style')
-                            if style == 'BADGE_STYLE_TYPE_LIVE_NOW':
-                                return video.get('videoId')
-    except Exception:
-        return None
-
+    # 如果状态码是 302 重定向，Location 就是正在直播的 URL
+    if resp.status_code in (301, 302):
+        live_url = resp.headers.get("Location")
+        if live_url:
+            # 补全为完整 URL
+            if live_url.startswith("/watch"):
+                live_url = "https://www.youtube.com" + live_url
+            return live_url
     return None
 
 # 遍历频道列表
 for cid in CHANNEL_IDS:
-    video_id = get_live_video_id(cid)
-    if video_id:
-        live_url = f"https://www.youtube.com/watch?v={video_id}"
+    live_url = get_live_url(cid)
+    if live_url:
         print("频道正在直播，链接:", live_url)
-
         key = f"live:{cid}"
         last_id = r.get(key)
-        if not last_id or last_id.decode() != video_id:
+        if not last_id or last_id.decode() != live_url:
             send_telegram(f"📺频道正在直播！\n{live_url}")
-            r.set(key, live_url)  # 可加过期时间 ex=10800
+            r.set(key, live_url)
     else:
         print(f"频道 {cid} 当前没有直播")
