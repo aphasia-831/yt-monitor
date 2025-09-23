@@ -31,10 +31,10 @@ def send_telegram(msg: str):
         params={"chat_id": TELEGRAM_CHAT_ID, "text": msg}
     )
 
-def get_live_url(channel_ids):
+def get_live_url(channel_id):
     url = f"https://holodex.net/api/v2/users/live"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
-    params = {"channels": ",".join(channel_ids)}  # 用逗号分隔
+    params = {"channels": ",".join(channel_id)}  # 用逗号分隔
     
     try:
         resp = requests.get(url, headers=headers, params=params,timeout=10)
