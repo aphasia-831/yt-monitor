@@ -37,16 +37,18 @@ def get_live_url(channel_id):
     
     try:
         resp = requests.get(url, headers=headers, timeout=10)
-        if resp.status_code == 200:
-          print(f"[{channel_id}] Holodex API请求失败: {resp.status_code} {resp.text}")
-          return None
+        # if resp.status_code == 200:
+        #   print(f"[{channel_id}] Holodex API请求成功: {resp.status_code} {resp.text}")
+        #   return None
         data = resp.json()
-        if data:
-            return f"https://www.youtube.com/watch?v={data[0]['videoId']}"
+        if data and data[0]["status"] == "live":
+            video_id = data[0]["id"]
+            return f"https://www.youtube.com/watch?v={video_id}"
+    except ValueError:
+        print(f"[{channel_id}] 返回内容不是 JSON，可能是 HTML 或 API Key 错误")
     except Exception as e:
-        print(f"[{channel_id}] 请求或解析失败: {e}")
+        print(f"[{channel_id}] 请求异常: {e}")
     return None
-    
 
 # 遍历频道列表
 for cid in CHANNEL_IDS:
