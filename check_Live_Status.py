@@ -31,7 +31,7 @@ def send_telegram(msg: str):
         params={"chat_id": TELEGRAM_CHAT_ID, "text": msg}
     )
 
-def get_live_url():
+def get_live_url(channel_ids):
     url = f"https://holodex.net/api/v2/users/live"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
     params = {"channels": ",".join(channel_ids)}  # 用逗号分隔
@@ -54,7 +54,7 @@ def get_live_url():
 # 遍历频道列表
 for cid in CHANNEL_IDS:
     cid = cid.strip()
-    live_url = get_live_url()
+    live_url = get_live_url(cid)
     if live_url:
         print(f"[{cid}] 正在直播: {live_url}")
         key = f"live:{cid}"
