@@ -9,7 +9,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Redis
 REDIS_URL = os.getenv("UPSTASH_REDIS_URL")
-rdb = redis.Redis.from_url(f"{REDIS_URL}/0",ssl=True)
+rdb = redis.Redis.from_url(REDIS_URL,ssl=True)
 
 # 频道 ID / @名
 CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
