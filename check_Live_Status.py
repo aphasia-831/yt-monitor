@@ -1,5 +1,4 @@
 import requests
-import re
 import os
 import redis
 import json
@@ -15,19 +14,16 @@ if not redis_url:
 # 连接 Redis
 r = redis.from_url(redis_url, decode_responses=True)
 
+# Holodex API Key
+HOLDEX_API_KEY = os.getenv("HOLDEX_API_KEY")
+if not HOLDEX_API_KEY:
+    raise ValueError("Please set HOLDEX_API_KEY environment variable")
 
 # 频道 ID / @名
 CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
 
 # 过期时间（秒）
 TTL = 1 * 60 * 60  #test 先不设置过期时间
-
-def build_live_url(cid: str) -> str:
-    cid = cid.strip()
-    if cid.startswith("@"):
-        return f"https://www.youtube.com/{cid}/live"
-    else:
-        return f"https://www.youtube.com/channel/{cid}/live"
 
 def send_telegram(msg: str):
     requests.get(
@@ -36,17 +32,14 @@ def send_telegram(msg: str):
     )
 
 def get_live_url(channel_id):
-    url = f"https://www.youtube.com/channel/{channel_id}/live"
-    # 不允许自动重定向
-    resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=False)
+    url = f"https://holodex.net/api/v2/live/{channel_id}"
+    headers = {"X-APIKEY": HOLDEX_API_KEY}
+    resp = requests.get(url, headers=headers)
 
-    # 如果状态码是 302 重定向，Location 就是正在直播的 URL
-    if resp.status_code in (301, 302):
-        live_url = resp.headers.get("Location")
-        if live_url:
-            # 补全为完整 URL
-            if live_url.startswith("/watch"):
-                live_url = "https://www.youtube.com" + live_url
+    if resp.status_code == 200:
+        data = resp.json()
+        if data:
+            live_url = f"https://www.youtube.com/watch?v={data[0]['videoId']}"
             return live_url
     return None
 
