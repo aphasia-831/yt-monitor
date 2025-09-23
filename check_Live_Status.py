@@ -43,10 +43,12 @@ for cid in CHANNEL_IDS:
     if match:
         video_id = match.group(1)
         live_url = f"https://www.youtube.com/watch?v={video_id}"
+        print("可能的视频链接", video_id)
 
         key = f"live:{cid}"
         last_id = r.get(key)
 
         if not last_id or last_id.decode() != video_id:
             send_telegram(f"📺频道正在直播！\n{live_url}")
-            r.setex(key, video_id)  # 设置过期时间
+            print("直播链接：", live_url)
+            r.set(key, video_id)  # 设置过期时间
