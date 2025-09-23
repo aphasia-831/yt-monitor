@@ -45,8 +45,8 @@ for cid in CHANNEL_IDS:
         live_url = f"https://www.youtube.com/watch?v={video_id}"
 
         key = f"live:{cid}"
-        last_id = rdb.get(key)
+        last_id = r.get(key)
 
         if not last_id or last_id.decode() != video_id:
             send_telegram(f"频道 {cid} 正在直播！\n{live_url}")
-            rdb.setex(key, TTL, video_id)  # 设置过期时间
+            r.setex(key, TTL, video_id)  # 设置过期时间
