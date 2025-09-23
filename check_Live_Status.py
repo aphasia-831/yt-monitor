@@ -31,12 +31,13 @@ def send_telegram(msg: str):
         params={"chat_id": TELEGRAM_CHAT_ID, "text": msg}
     )
 
-def get_live_url(channel_id):
-    url = f"https://holodex.net/api/v2/{channel_id}/live/"
+def get_live_url():
+    url = f"https://holodex.net/api/v2/users/live"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
+    params = {"channels": ",".join(channel_ids)}  # 用逗号分隔
     
     try:
-        resp = requests.get(url, headers=headers, timeout=10)
+        resp = requests.get(url, headers=headers, params=params,timeout=10)
         if resp.status_code == 200:
           print(f"[{channel_id}] Holodex API请求成功: {resp.status_code} {resp.text}")
           return None
@@ -53,7 +54,7 @@ def get_live_url(channel_id):
 # 遍历频道列表
 for cid in CHANNEL_IDS:
     cid = cid.strip()
-    live_url = get_live_url(cid)
+    live_url = get_live_url()
     if live_url:
         print(f"[{cid}] 正在直播: {live_url}")
         key = f"live:{cid}"
