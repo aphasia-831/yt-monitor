@@ -32,7 +32,7 @@ def send_telegram(msg: str):
     )
 
 def get_live_url(channel_id):
-    url = f"https://holodex.net/api/v2/live/{channel_id}"
+    url = f"https://holodex.net/api/v2/live"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
     
     try:
