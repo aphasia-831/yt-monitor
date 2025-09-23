@@ -19,11 +19,11 @@ HOLODEX_API_KEY = os.getenv("HOLODEX_API_KEY")
 if not HOLODEX_API_KEY:
     raise ValueError("Please set HOLODEX_API_KEY environment variable")
 
-# 频道 ID / @名
+# 频道
 CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
 
 # 过期时间（秒）
-TTL = 1 * 60 * 60  #test 先不设置过期时间
+#TTL = 1 * 60 * 60  #test 先不设置过期时间
 
 def send_telegram(msg: str):
     requests.get(
@@ -34,20 +34,27 @@ def send_telegram(msg: str):
 def get_live_url(channel_id):
     url = f"https://holodex.net/api/v2/live/{channel_id}"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
-    resp = requests.get(url, headers=headers)
-
-    if resp.status_code == 200:
+    
+    try:
+        resp = requests.get(url, headers=headers,, timeout=10)
+        if resp.status_code == 200:
+        print(f"[{channel_id}] Holodex API请求失败: {resp.status_code} {resp.text}")
+        
+        return None
         data = resp.json()
         if data:
-            live_url = f"https://www.youtube.com/watch?v={data[0]['videoId']}"
-            return live_url
+            return f"https://www.youtube.com/watch?v={data[0]['videoId']}"
+    except Exception as e:
+        print(f"[{channel_id}] 请求或解析失败: {e}")
     return None
+    
 
 # 遍历频道列表
 for cid in CHANNEL_IDS:
+    cid = cid.strip()
     live_url = get_live_url(cid)
     if live_url:
-        print("频道正在直播，链接:", live_url)
+        print(f"[{cid}] 正在直播: {live_url}")
         key = f"live:{cid}"
         last_id = r.get(key)
         if not last_id or last_id.decode() != live_url:
