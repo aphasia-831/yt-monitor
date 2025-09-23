@@ -19,7 +19,7 @@ r = redis.from_url(redis_url, decode_responses=True)
 CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
 
 # 过期时间（秒）
-TTL = 0 * 60 * 60  #test 先不设置过期时间
+TTL = 1 * 60 * 60  #test 先不设置过期时间
 
 def build_live_url(cid: str) -> str:
     cid = cid.strip()
@@ -48,5 +48,5 @@ for cid in CHANNEL_IDS:
         last_id = r.get(key)
 
         if not last_id or last_id.decode() != video_id:
-            send_telegram(f"频道 {cid} 正在直播！\n{live_url}")
-            r.setex(key, TTL, video_id)  # 设置过期时间
+            send_telegram(f"📺频道正在直播！\n{live_url}")
+            r.setex(key, video_id)  # 设置过期时间
