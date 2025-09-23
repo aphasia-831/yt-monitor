@@ -12,8 +12,12 @@ REDIS_URL = os.getenv("UPSTASH_REDIS_URL")
 rdb = redis.Redis.from_url(REDIS_URL,ssl=True)
 
 # 频道 ID / @名
-CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
+channel_ids_str = os.getenv("CHANNEL_IDS")
+if not channel_ids_str:
+    raise ValueError("CHANNEL_IDS environment variable is not set")
 
+CHANNEL_IDS = channel_ids_str.split(",")
+print(CHANNEL_IDS)
 # 过期时间（秒）
 TTL = 0 * 60 * 60  #test 先不设置过期时间
 
