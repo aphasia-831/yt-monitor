@@ -15,9 +15,9 @@ if not redis_url:
 r = redis.from_url(redis_url, decode_responses=True)
 
 # Holodex API Key
-HOLDEX_API_KEY = os.getenv("HOLDEX_API_KEY")
-if not HOLDEX_API_KEY:
-    raise ValueError("Please set HOLDEX_API_KEY environment variable")
+HOLODEX_API_KEY = os.getenv("HOLODEX_API_KEY")
+if not HOLODEX_API_KEY:
+    raise ValueError("Please set HOLODEX_API_KEY environment variable")
 
 # 频道 ID / @名
 CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
@@ -33,7 +33,7 @@ def send_telegram(msg: str):
 
 def get_live_url(channel_id):
     url = f"https://holodex.net/api/v2/live/{channel_id}"
-    headers = {"X-APIKEY": HOLDEX_API_KEY}
+    headers = {"X-APIKEY": HOLODEX_API_KEY}
     resp = requests.get(url, headers=headers)
 
     if resp.status_code == 200:
