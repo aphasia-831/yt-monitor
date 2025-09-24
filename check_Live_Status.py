@@ -73,7 +73,7 @@ for cid in CHANNEL_IDS:
         print(f"[{cid}] 正在直播: {live_url}")
         key = f"live:{cid}"
         last_id = r.get(key)
-        if not last_id or last_id.decode() != live_url:
+        if not last_id or last_id != live_url:
             send_telegram(f"📺频道正在直播！\n{live_url}")
             r.setex(key, TTL,live_url)
     else:
