@@ -44,14 +44,23 @@ def get_live_url(channel_id):
         print(f"[{channel_id}] Holodex API请求成功！返回内容:",{resp.text})
         
     data = resp.json()
-
-    if isinstance(data, dict) and len(data) == 1:
-        raw_json_str = list(data.keys())[0] 
     try:
-        data = json.loads(raw_json_str)
+        data = resp.json()
+        print("resp.json() 解析成功, 类型:", type(data))
+        if isinstance(data, dict):
+            print("dict keys:", list(data.keys()))
+        elif isinstance(data, list):
+            print("list 长度:", len(data))
     except Exception as e:
-        print("解析 JSON 失败:", e)
-        return None
+        print("resp.json() 解析失败:", e)
+    return None
+    # if isinstance(data, dict) and len(data) == 1:
+    #     raw_json_str = list(data.keys())[0] 
+    # try:
+    #     data = json.loads(raw_json_str)
+    # except Exception as e:
+    #     print("解析 JSON 失败:", e)
+    #     return None
         
     video_id = None
     for item in data:
