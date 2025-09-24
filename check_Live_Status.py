@@ -51,6 +51,7 @@ def get_live_url(channel_id):
                 print("找到正在直播的状态")
                 print("输出直播间信息",item)
                 video_id = item.get("id")
+                print("输出视频id",video_id)
                 break  # 找到第一个 live 就退出循环
 
             if video_id:
