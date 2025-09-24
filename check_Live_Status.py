@@ -38,9 +38,12 @@ def get_live_url(channel_id):
     
     try:
         resp = requests.get(url, headers=headers,timeout=10)
-        if resp.status_code == 200:
-          print(f"[{channel_id}] Holodex API请求成功: {resp.status_code}返回内容:",{resp.text})
+        if resp.status_code != 200:
+          print(f"[{channel_id}] Holodex API请求失败: {resp.status_code}返回内容:",{resp.text})
           return None
+        
+        else:
+            print(f"[{channel_id}] Holodex API请求成功！返回内容:",{resp.text})
         data = resp.json()
         for item in data:
             if item.get("status") == "live":
