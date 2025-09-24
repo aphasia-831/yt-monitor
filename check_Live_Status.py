@@ -35,36 +35,40 @@ def get_live_url(channel_id):
     url = f"https://holodex.net/api/v2/users/live?channels={channel_id}"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
     # params = {"channels": ",".join(channel_id)}  # 用逗号分隔
-    
-    try:
-        resp = requests.get(url, headers=headers,timeout=10)
-        if resp.status_code != 200:
-          print(f"[{channel_id}] Holodex API请求失败: {resp.status_code}返回内容:",{resp.text})
-          return None
+    resp = requests.get(url, headers=headers,timeout=10)
+    if resp.status_code != 200:
+        print(f"[{channel_id}] Holodex API请求失败: {resp.status_code}返回内容:",{resp.text})
+        return None
         
-        else:
-            print(f"[{channel_id}] Holodex API请求成功！返回内容:",{resp.text})
-        data = resp.json()
-        video_id = None
-        for item in data:
-            if item.get("status") == "live":
-                print("找到正在直播的状态")
-                print({item})
-                video_id = item.get("id")
-                break  # 找到第一个 live 就退出循环
+    else:
+        print(f"[{channel_id}] Holodex API请求成功！返回内容:",{resp.text})
+        
+    data = resp.json()
 
-            if video_id:
+    if isinstance(data, dict) and len(data) == 1:
+        raw_json_str = list(data.keys())[0] 
+    try:
+        data = json.loads(raw_json_str)
+    except Exception as e:
+        print("解析 JSON 失败:", e)
+        return None
+        
+    video_id = None
+    for item in data:
+        if item.get("status") == "live":
+            print("找到正在直播的状态")
+            print("输出直播间信息：",{item})
+            video_id = item.get("id")
+            break  # 找到第一个 live 就退出循环
+
+        if video_id:
                 print(f"找到正在直播的视频 ID: {video_id}")
                 return f"https://www.youtube.com/watch?v={video_id}"
                 
-            else:
+        else:
                 print("当前没有正在直播的频道")
 
-    except ValueError:
-        print(f"[{channel_id}] 返回内容不是 JSON,可能是 HTML 或 API Key 错误")
-    except Exception as e:
-        print(f"[{channel_id}] 请求异常: {e}")
-    return None
+        return None
 
 # 遍历频道列表
 for cid in CHANNEL_IDS:
