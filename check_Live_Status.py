@@ -70,7 +70,7 @@ for cid in CHANNEL_IDS:
     cid = cid.strip()
     live_url = get_live_url(cid)
     if live_url:
-        print(f"[{cid}] 正在直播: {live_url}")
+        # print(f"[{cid}] 正在直播: {live_url}")
         key = f"live:{cid}"
         last_id = r.get(key)
         if not last_id or last_id != live_url:
