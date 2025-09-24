@@ -45,9 +45,11 @@ def get_live_url(channel_id):
         else:
             print(f"[{channel_id}] Holodex API请求成功！返回内容:",{resp.text})
         data = resp.json()
+        video_id = None
         for item in data:
             if item.get("status") == "live":
                 print("找到正在直播的状态")
+                print({item})
                 video_id = item.get("id")
                 break  # 找到第一个 live 就退出循环
 
