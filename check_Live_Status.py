@@ -76,5 +76,5 @@ for cid in CHANNEL_IDS:
         if not last_id or last_id != live_url:
             send_telegram(f"📺频道正在直播！\n{live_url}")
             r.setex(key, TTL,live_url)
-    else:
+    
         
