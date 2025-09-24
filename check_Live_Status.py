@@ -51,7 +51,7 @@ def get_live_url(channel_id):
                 # print("找到正在直播的状态")
                 # print("输出直播间信息",item)
                 video_id = item.get("id")
-                # print("输出视频id",video_id)
+                print("视频id",video_id)
                 break  # 找到第一个 live 就退出循环
 
         if video_id:
@@ -70,11 +70,11 @@ for cid in CHANNEL_IDS:
     cid = cid.strip()
     live_url = get_live_url(cid)
     if live_url:
-        # print(f"[{cid}] 正在直播: {live_url}")
+        print(f"[{cid}] 正在直播: {live_url}")
         key = f"live:{cid}"
         last_id = r.get(key)
         if not last_id or last_id != live_url:
             send_telegram(f"📺频道正在直播！\n{live_url}")
             r.setex(key, TTL,live_url)
     else:
-        print(f"频道 {cid} 当前没有直播")
+        
