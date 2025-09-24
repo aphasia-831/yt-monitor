@@ -47,6 +47,7 @@ def get_live_url(channel_id):
         data = resp.json()
         for item in data:
             if item.get("status") == "live":
+                print("找到正在直播的状态")
                 video_id = item.get("id")
                 break  # 找到第一个 live 就退出循环
 
