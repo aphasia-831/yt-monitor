@@ -54,12 +54,12 @@ def get_live_url(channel_id):
                 print("输出视频id",video_id)
                 break  # 找到第一个 live 就退出循环
 
-            if video_id:
-                print(f"找到正在直播的视频 ID: {video_id}")
-                return f"https://www.youtube.com/watch?v={video_id}"
+        if video_id:
+            print(f"找到正在直播的视频 ID: {video_id}")
+            return f"https://www.youtube.com/watch?v={video_id}"
                 
-            else:
-                print("当前没有正在直播的频道")
+        else:
+            print("当前没有正在直播的频道")
 
     except ValueError:
         print(f"[{channel_id}] 返回内容不是 JSON,可能是 HTML 或 API Key 错误")
