@@ -23,7 +23,7 @@ if not HOLODEX_API_KEY:
 CHANNEL_IDS = os.getenv("CHANNEL_IDS").split(",")
 
 # 过期时间（秒）
-#TTL = 1 * 60 * 60  #test 先不设置过期时间
+TTL = 6 * 60 * 60  #test 先不设置过期时间///过期时间6h
 
 def send_telegram(msg: str):
     requests.get(
@@ -39,27 +39,25 @@ def get_live_url(channel_id):
     try:
         resp = requests.get(url, headers=headers,timeout=10)
         if resp.status_code != 200:
-          print(f"[{channel_id}] Holodex API请求失败: {resp.status_code}返回内容:",{resp.text})
+         # print(f"[{channel_id}] Holodex API请求失败: {resp.status_code}返回内容:",{resp.text})
           return None
         
-        else:
-            print(f"[{channel_id}] Holodex API请求成功！返回内容:",{resp.text})
+        # else:
+        #     print(f"[{channel_id}] Holodex API请求成功！返回内容:",{resp.text})
         data = resp.json()
         video_id = None
         for item in data:
             if item.get("status") == "live":
-                print("找到正在直播的状态")
-                print("输出直播间信息",item)
+                # print("找到正在直播的状态")
+                # print("输出直播间信息",item)
                 video_id = item.get("id")
-                print("输出视频id",video_id)
+                # print("输出视频id",video_id)
                 break  # 找到第一个 live 就退出循环
 
         if video_id:
-            print(f"找到正在直播的视频 ID: {video_id}")
+            # print(f"找到正在直播的视频 ID: {video_id}")
             return f"https://www.youtube.com/watch?v={video_id}"
                 
-        else:
-            print("当前没有正在直播的频道")
 
     except ValueError:
         print(f"[{channel_id}] 返回内容不是 JSON,可能是 HTML 或 API Key 错误")
@@ -77,6 +75,6 @@ for cid in CHANNEL_IDS:
         last_id = r.get(key)
         if not last_id or last_id.decode() != live_url:
             send_telegram(f"📺频道正在直播！\n{live_url}")
-            r.set(key, live_url)
+            r.set(key, TTL,live_url)
     else:
         print(f"频道 {cid} 当前没有直播")
