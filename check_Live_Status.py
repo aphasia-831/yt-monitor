@@ -42,9 +42,18 @@ def get_live_url(channel_id):
           print(f"[{channel_id}] Holodex API请求成功: {resp.status_code}返回内容:",{resp.text})
           return None
         data = resp.json()
-        if data and data[0]["status"] == "live":
-            video_id = data[0]["id"]
-            return f"https://www.youtube.com/watch?v={video_id}"
+        for item in data:
+            if item.get("status") == "live":
+                video_id = item.get("id")
+                break  # 找到第一个 live 就退出循环
+
+            if video_id:
+                print(f"找到正在直播的视频 ID: {video_id}")
+                return f"https://www.youtube.com/watch?v={video_id}"
+                
+            else:
+                print("当前没有正在直播的频道")
+
     except ValueError:
         print(f"[{channel_id}] 返回内容不是 JSON,可能是 HTML 或 API Key 错误")
     except Exception as e:
