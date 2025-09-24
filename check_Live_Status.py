@@ -32,7 +32,7 @@ def send_telegram(msg: str):
     )
 
 def get_live_url(channel_id):
-    url = f"https://holodex.net/api/v2/users/live?channels=UCR6qhsLpn62WVxCBK1dkLow,UCim0N3tvLijU_I3jbJeJV8g"
+    url = f"https://holodex.net/api/v2/users/live?channels=UCR6qhsLpn62WVxCBK1dkLow"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
     # params = {"channels": ",".join(channel_id)}  # 用逗号分隔
     
