@@ -32,21 +32,21 @@ def send_telegram(msg: str):
     )
 
 def get_live_url(channel_id):
-    url = f"https://holodex.net/api/v2/users/live"
+    url = f"https://holodex.net/api/v2/users/live?channels=UCR6qhsLpn62WVxCBK1dkLow,UCim0N3tvLijU_I3jbJeJV8g"
     headers = {"X-APIKEY": HOLODEX_API_KEY}
-    params = {"channels": ",".join(channel_id)}  # 用逗号分隔
+    # params = {"channels": ",".join(channel_id)}  # 用逗号分隔
     
     try:
-        resp = requests.get(url, headers=headers, params=params,timeout=10)
+        resp = requests.get(url, headers=headers,timeout=10)
         if resp.status_code == 200:
-          print(f"[{channel_id}] Holodex API请求成功: {resp.status_code} {resp.text}")
+          print(f"[{channel_id}] Holodex API请求成功: {resp.status_code}返回内容:",{resp.text})
           return None
         data = resp.json()
         if data and data[0]["status"] == "live":
             video_id = data[0]["id"]
             return f"https://www.youtube.com/watch?v={video_id}"
     except ValueError:
-        print(f"[{channel_id}] 返回内容不是 JSON，可能是 HTML 或 API Key 错误")
+        print(f"[{channel_id}] 返回内容不是 JSON,可能是 HTML 或 API Key 错误")
     except Exception as e:
         print(f"[{channel_id}] 请求异常: {e}")
     return None
